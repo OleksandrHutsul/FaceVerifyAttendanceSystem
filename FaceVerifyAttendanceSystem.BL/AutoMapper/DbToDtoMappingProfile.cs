@@ -15,6 +15,11 @@ namespace FaceVerifyAttendanceSystem.BL.AutoMapper
                 .ForMember(dest => dest.EducationalInstitution, opt => opt.MapFrom(src => src.EducationalInstitution))
                 .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
+
+            CreateMap<User, ExternalLoginDTO>().ReverseMap()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.EducationalInstitution, opt => opt.MapFrom(src => src.EducationalInstitution))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
         }
     }
 }
