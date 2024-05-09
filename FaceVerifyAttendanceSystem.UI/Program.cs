@@ -15,16 +15,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApiDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("SqlConnection")));
 
-builder.Services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApiDbContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApiDbContext>();
 
 builder.Services.AddAutoMapper(typeof(DbToDtoMappingProfile));
 builder.Services.AddDependencyInjections();
-
-builder.Services.AddIdentityCore<User>()
-    .AddEntityFrameworkStores<ApiDbContext>()
-.AddDefaultTokenProviders();
 
 builder.Services.AddScoped<SignInManager<User>>();
 
