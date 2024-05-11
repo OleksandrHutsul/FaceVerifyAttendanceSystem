@@ -9,17 +9,30 @@ namespace FaceVerifyAttendanceSystem.BL.AutoMapper
         public DbToDtoMappingProfile() 
         {
             CreateMap<User, RegisterDTO>().ReverseMap()
-                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
-                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
-                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.MiddleName))
-                .ForMember(dest => dest.EducationalInstitution, opt => opt.MapFrom(src => src.EducationalInstitution))
-                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
+                .ForMember(x => x.LastName, y => y.MapFrom(src => src.LastName))
+                .ForMember(x => x.FirstName, y => y.MapFrom(src => src.FirstName))
+                .ForMember(x => x.MiddleName, y => y.MapFrom(src => src.MiddleName))
+                .ForMember(x => x.EducationalInstitution, y => y.MapFrom(src => src.EducationalInstitution))
+                .ForMember(x => x.PasswordHash, y => y.MapFrom(src => src.Password))
+                .ForMember(x => x.Email, y => y.MapFrom(src => src.Email));
 
             CreateMap<User, ExternalLoginDTO>().ReverseMap()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.EducationalInstitution, opt => opt.MapFrom(src => src.EducationalInstitution))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
+                .ForMember(x => x.Email, y => y.MapFrom(src => src.Email))
+                .ForMember(x => x.EducationalInstitution, y => y.MapFrom(src => src.EducationalInstitution))
+                .ForMember(x => x.UserName, y => y.MapFrom(src => src.Email));
+
+            CreateMap<User, IndexDTO>().ReverseMap()
+                .ForMember(x => x.PhoneNumber, y => y.MapFrom(src => src.PhoneNumber))
+                .ForMember(x => x.FirstName, y => y.MapFrom(src => src.FirstName))
+                .ForMember(x => x.LastName, y => y.MapFrom(src => src.LastName))
+                .ForMember(x => x.MiddleName, y => y.MapFrom(src => src.MiddleName))
+                .ForMember(x => x.EducationalInstitution, y => y.MapFrom(src => src.EducationalInstitution))
+                .ForMember(x => x.Birthday, y => y.MapFrom(src => src.Birthday))
+                .ForMember(x => x.IdentificationNumber, y => y.MapFrom(src => src.IdentificationNumber))
+                .ForMember(x => x.Country, y => y.MapFrom(src => src.Country))
+                .ForMember(x => x.City, y => y.MapFrom(src => src.City))
+                .ForMember(x => x.CourseEducation, y => y.MapFrom(src => src.CourseEducation))
+                .ForMember(x => x.ProfilePicture, y => y.MapFrom(src => src.ProfilePicture));
         }
     }
 }

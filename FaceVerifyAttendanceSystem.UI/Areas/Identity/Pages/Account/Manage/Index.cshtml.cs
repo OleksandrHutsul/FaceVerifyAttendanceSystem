@@ -1,24 +1,32 @@
 ﻿#nullable disable
 
+using AutoMapper;
 using FaceVerifyAttendanceSystem.BL.Models;
+using FaceVerifyAttendanceSystem.BL.Services;
 using FaceVerifyAttendanceSystem.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
+        private const string credentialPath = "credentials.json";
+        private const string folderId = "1VLPt6EOO7CIW964y1_TiWmQEBzXUttLo";
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IMapper _mapper;
 
         public IndexModel(
             UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager,
+            IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _mapper = mapper;
         }
 
         public string Username { get; set; }
@@ -31,16 +39,14 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadAsync(User user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var userFromDb = await _userManager.FindByIdAsync((user.Id).ToString());
 
+            var userName = await _userManager.GetUserNameAsync(user);
             Username = userName;
 
-            IndexDTO = new IndexDTO
-            {
-                PhoneNumber = phoneNumber
-            };
+            IndexDTO = _mapper.Map<IndexDTO>(userFromDb);
         }
+
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -56,27 +62,36 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.SelectMany(x => x.Value.Errors.Select(p => p.ErrorMessage));
+                foreach (var error in errors)
+                {
+                    Console.WriteLine(error);
+                }
+
+                return Page();
+            }
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!ModelState.IsValid)
+            if (IndexDTO.Photo != null)
             {
-                await LoadAsync(user);
-                return Page();
+                var photoUrl = await UploadPhotoService.UploadProfilePhoto(credentialPath, folderId, IndexDTO.Photo);
+                IndexDTO.ProfilePicture = photoUrl;
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (IndexDTO.PhoneNumber != phoneNumber)
+            _mapper.Map(IndexDTO, user);
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, IndexDTO.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
+                StatusMessage = "Unexpected error when trying to update profile.";
+                return RedirectToPage();
             }
 
             await _signInManager.RefreshSignInAsync(user);

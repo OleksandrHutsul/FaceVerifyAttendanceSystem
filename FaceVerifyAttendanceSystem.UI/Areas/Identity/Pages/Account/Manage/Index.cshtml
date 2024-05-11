@@ -9,8 +9,23 @@
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
     <div class="col-md-6">
-        <form id="profile-form" method="post">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="IndexDTO.FirstName" class="form-control" placeholder="Please enter your name." />
+                <label asp-for="IndexDTO.FirstName" class="form-label"></label>
+                <span asp-validation-for="IndexDTO.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="IndexDTO.MiddleName" class="form-control" placeholder="Please enter your middle name." />
+                <label asp-for="IndexDTO.MiddleName" class="form-label"></label>
+                <span asp-validation-for="IndexDTO.MiddleName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="IndexDTO.LastName" class="form-control" placeholder="Please enter your last name." />
+                <label asp-for="IndexDTO.LastName" class="form-label"></label>
+                <span asp-validation-for="IndexDTO.LastName" class="text-danger"></span>
+            </div>
             <div class="form-floating mb-3">
                 <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
                 <label asp-for="Username" class="form-label"></label>
@@ -20,7 +35,52 @@
                 <label asp-for="IndexDTO.PhoneNumber" class="form-label"></label>
                 <span asp-validation-for="IndexDTO.PhoneNumber" class="text-danger"></span>
             </div>
+            <div class="form-floating mb-3">
+                <input asp-for="IndexDTO.EducationalInstitution" class="form-control" placeholder="Please enter your institution." />
+                <label asp-for="IndexDTO.EducationalInstitution" class="form-label"></label>
+                <span asp-validation-for="IndexDTO.EducationalInstitution" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="IndexDTO.Birthday" class="form-control" placeholder="Please enter your birthday." />
+                <label asp-for="IndexDTO.Birthday" class="form-label"></label>
+                <span asp-validation-for="IndexDTO.Birthday" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="IndexDTO.IdentificationNumber" class="form-control" placeholder="Please enter your identification number." />
+                <label asp-for="IndexDTO.IdentificationNumber" class="form-label"></label>
+                <span asp-validation-for="IndexDTO.IdentificationNumber" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="IndexDTO.Country" class="form-control" placeholder="Please enter your country." />
+                <label asp-for="IndexDTO.Country" class="form-label"></label>
+                <span asp-validation-for="IndexDTO.Country" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="IndexDTO.City" class="form-control" placeholder="Please enter your city." />
+                <label asp-for="IndexDTO.City" class="form-label"></label>
+                <span asp-validation-for="IndexDTO.City" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="IndexDTO.CourseEducation" class="form-control" placeholder="Please enter your group number." />
+                <label asp-for="IndexDTO.CourseEducation" class="form-label"></label>
+                <span asp-validation-for="IndexDTO.CourseEducation" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="file" id="photo-upload" name="IndexDTO.Photo" class="form-control" accept="image/*" />
+                <label for="photo-upload" class="form-label">Upload Photo</label>
+            </div>
+
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+
+            @if (!string.IsNullOrEmpty(Model.IndexDTO.ProfilePicture))
+            {
+                <img src="@Model.IndexDTO.ProfilePicture" alt="Profile Picture" style="max-width: 100%; height: 100%" />
+            }
+            else
+            {
+                <p>No profile picture available</p>
+            }
         </form>
     </div>
 </div>
