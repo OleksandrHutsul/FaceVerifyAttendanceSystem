@@ -58,5 +58,23 @@ namespace FaceVerifyAttendanceSystem.BL.Services
             return uploadedUrl;
         }
 
+        public static void DeleteFileFromGoogleDrive(string credentialPath, string fileId)
+        {
+            GoogleCredential credential;
+
+            using (var stream = new FileStream(credentialPath, FileMode.Open, FileAccess.Read))
+            {
+                credential = GoogleCredential.FromStream(stream).CreateScoped(new[]
+                { DriveService.ScopeConstants.Drive });
+            }
+
+            var service = new DriveService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "DeletePhoto"
+            });
+
+            service.Files.Delete(fileId).Execute();
+        }
     }
 }

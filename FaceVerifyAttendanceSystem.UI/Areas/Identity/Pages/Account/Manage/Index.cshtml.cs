@@ -7,14 +7,13 @@ using FaceVerifyAttendanceSystem.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using static NuGet.Packaging.PackagingConstants;
 
 namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
         private const string credentialPath = "credentials.json";
-        private const string folderId = "1VLPt6EOO7CIW964y1_TiWmQEBzXUttLo";
+        private const string folderId = "1XyKmDPzNCJVIUze8wNATXKakwOPni2n4";
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
@@ -96,6 +95,35 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostDeletePhotoAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            if (!string.IsNullOrEmpty(user.ProfilePicture))
+            {
+                var fileId = user.ProfilePicture.Split("id=")[1];
+                UploadPhotoService.DeleteFileFromGoogleDrive(credentialPath, fileId);
+            }
+
+            user.ProfilePicture = null;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                StatusMessage = "Unexpected error when trying to delete photo.";
+                return RedirectToPage();
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            StatusMessage = "Your photo has been deleted";
             return RedirectToPage();
         }
     }
