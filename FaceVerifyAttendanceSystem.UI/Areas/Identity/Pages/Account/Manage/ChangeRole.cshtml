@@ -1,0 +1,26 @@
+﻿@page
+@model ChangeRoleModel
+@{
+    ViewData["Title"] = "Change Role";
+    ViewData["ActivePage"] = ManageNavPages.ChangeRole;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="change-role-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="ApplicationDTO.NameDepartment" class="form-control" aria-required="true" placeholder="Please enter the department name." />
+                <label asp-for="ApplicationDTO.NameDepartment" class="form-label"></label>
+                <span asp-validation-for="ApplicationDTO.NameDepartment" class="text-danger"></span>
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Update Role</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

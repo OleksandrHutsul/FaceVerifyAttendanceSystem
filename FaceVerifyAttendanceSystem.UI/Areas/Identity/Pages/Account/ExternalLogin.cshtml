@@ -24,6 +24,21 @@
                 <span asp-validation-for="ExternalLoginDTO.Email" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
+                <input asp-for="ExternalLoginDTO.FirstName" class="form-control" placeholder="Please enter your educational institution." />
+                <label asp-for="ExternalLoginDTO.FirstName" class="form-label"></label>
+                <span asp-validation-for="ExternalLoginDTO.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="ExternalLoginDTO.MiddleName" class="form-control" placeholder="Please enter your educational institution." />
+                <label asp-for="ExternalLoginDTO.MiddleName" class="form-label"></label>
+                <span asp-validation-for="ExternalLoginDTO.MiddleName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="ExternalLoginDTO.LastName" class="form-control" placeholder="Please enter your educational institution." />
+                <label asp-for="ExternalLoginDTO.LastName" class="form-label"></label>
+                <span asp-validation-for="ExternalLoginDTO.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
                 <input asp-for="ExternalLoginDTO.EducationalInstitution" class="form-control" placeholder="Please enter your educational institution." />
                 <label asp-for="ExternalLoginDTO.EducationalInstitution" class="form-label"></label>
                 <span asp-validation-for="ExternalLoginDTO.EducationalInstitution" class="text-danger"></span>

@@ -32,4 +32,12 @@
     <ProjectReference Include="..\FaceVerifyAttendanceSystem.DAL\FaceVerifyAttendanceSystem.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Areas\Identity\Pages\Account\Manage\ChangeRole.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\Manage\ChangeRole.cshtml" />
+  </ItemGroup>
+
 </Project>

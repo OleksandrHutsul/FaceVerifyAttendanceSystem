@@ -46,7 +46,6 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
             IndexDTO = _mapper.Map<IndexDTO>(userFromDb);
         }
 
-
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);

@@ -9,9 +9,19 @@ namespace FaceVerifyAttendanceSystem.BL.Models
         public string Email { get; set; }
 
         [Required]
-        public string EducationalInstitution { get; set; }
-        
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
         [Required]
-        public string UserName { get; set; }
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "Middle Name")]
+        public string MiddleName { get; set; }
+
+        [Required]
+        [Display(Name = "Educational Institution")]
+        public string EducationalInstitution { get; set; }
     }
 }

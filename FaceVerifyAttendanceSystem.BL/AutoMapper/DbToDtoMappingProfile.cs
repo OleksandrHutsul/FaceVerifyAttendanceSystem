@@ -19,6 +19,9 @@ namespace FaceVerifyAttendanceSystem.BL.AutoMapper
             CreateMap<User, ExternalLoginDTO>().ReverseMap()
                 .ForMember(x => x.Email, y => y.MapFrom(src => src.Email))
                 .ForMember(x => x.EducationalInstitution, y => y.MapFrom(src => src.EducationalInstitution))
+                .ForMember(x => x.LastName, y => y.MapFrom(src => src.LastName))
+                .ForMember(x => x.MiddleName, y => y.MapFrom(src => src.MiddleName))
+                .ForMember(x => x.FirstName, y => y.MapFrom(src => src.FirstName))
                 .ForMember(x => x.UserName, y => y.MapFrom(src => src.Email));
 
             CreateMap<User, IndexDTO>().ReverseMap()
@@ -33,6 +36,9 @@ namespace FaceVerifyAttendanceSystem.BL.AutoMapper
                 .ForMember(x => x.City, y => y.MapFrom(src => src.City))
                 .ForMember(x => x.CourseEducation, y => y.MapFrom(src => src.CourseEducation))
                 .ForMember(x => x.ProfilePicture, y => y.MapFrom(src => src.ProfilePicture));
+
+            CreateMap<Application, ApplicationDTO>().ReverseMap()
+                .ForMember(x => x.NameDepartment, y => y.MapFrom(src => src.NameDepartment));
         }
     }
 }

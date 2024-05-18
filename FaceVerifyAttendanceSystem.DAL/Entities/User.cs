@@ -4,10 +4,10 @@ namespace FaceVerifyAttendanceSystem.DAL.Entities
 {
     public class User : IdentityUser<int>
     {
-        public required string LastName { get; set; }
-        public required string FirstName { get; set; }
-        public required string MiddleName { get; set; }
-        public required string EducationalInstitution { get; set; }
+        public string? LastName { get; set; }
+        public string? FirstName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? EducationalInstitution { get; set; }
         public DateTime? Birthday { get; set; }
         public string? ProfilePicture { get; set; }
         public string? Country { get; set; }
@@ -18,6 +18,8 @@ namespace FaceVerifyAttendanceSystem.DAL.Entities
 
         public int? RoleId { get; set; } = 1;
         public Role? Role {  get; set; }
+        public int? ApplicationId { get; set; }
+        public Application? Application { get; set; }
         public ICollection<Attendance>? Attendances { get; set; }
         public ICollection<Lesson>? Lessons { get; set; }
     }
