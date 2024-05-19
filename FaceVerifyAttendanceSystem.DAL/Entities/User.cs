@@ -16,10 +16,9 @@ namespace FaceVerifyAttendanceSystem.DAL.Entities
         public int? IdentificationNumber { get; set; }
         public string? UploadPhoto { get; set; }
 
-        public int? RoleId { get; set; } = 1;
-        public Role? Role {  get; set; }
         public int? ApplicationId { get; set; }
         public Application? Application { get; set; }
+
         public ICollection<Attendance>? Attendances { get; set; }
         public ICollection<Lesson>? Lessons { get; set; }
     }

@@ -1,10 +1,11 @@
 ﻿using FaceVerifyAttendanceSystem.DAL.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FaceVerifyAttendanceSystem.DAL.Context
 {
-    public class ApiDbContext : IdentityDbContext<User, Role, int>
+    public class ApiDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public ApiDbContext(DbContextOptions options) : base(options) { }
 

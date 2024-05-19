@@ -34,7 +34,7 @@ namespace FaceVerifyAttendanceSystem.BL.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("hutsul.oleksandr@chnu.edu.ua", "Password Recovery"),
+                From = new EmailAddress("hutsul.oleksandr@chnu.edu.ua", "Face Verify Attendance System"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message

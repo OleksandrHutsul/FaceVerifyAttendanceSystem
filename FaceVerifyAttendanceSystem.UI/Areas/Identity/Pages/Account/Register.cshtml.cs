@@ -23,6 +23,7 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
 
         public RegisterModel(
             UserManager<User> userManager,
@@ -30,7 +31,8 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            IMapper mapper)
+            IMapper mapper,
+            RoleManager<IdentityRole<int>> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -39,6 +41,7 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _mapper = mapper;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -68,6 +71,8 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Student");
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);

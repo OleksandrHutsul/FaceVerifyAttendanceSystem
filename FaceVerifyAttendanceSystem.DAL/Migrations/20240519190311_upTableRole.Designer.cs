@@ -4,6 +4,7 @@ using FaceVerifyAttendanceSystem.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FaceVerifyAttendanceSystem.DAL.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240519190311_upTableRole")]
+    partial class upTableRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +42,7 @@ namespace FaceVerifyAttendanceSystem.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Applications", (string)null);
+                    b.ToTable("Applications");
                 });
 
             modelBuilder.Entity("FaceVerifyAttendanceSystem.DAL.Entities.Attendance", b =>
@@ -63,7 +66,7 @@ namespace FaceVerifyAttendanceSystem.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Attendances", (string)null);
+                    b.ToTable("Attendances");
                 });
 
             modelBuilder.Entity("FaceVerifyAttendanceSystem.DAL.Entities.Lesson", b =>
@@ -99,7 +102,7 @@ namespace FaceVerifyAttendanceSystem.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("FaceVerifyAttendanceSystem.DAL.Entities.User", b =>
