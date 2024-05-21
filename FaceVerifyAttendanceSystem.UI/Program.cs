@@ -35,7 +35,7 @@ builder.Services.AddDependencyInjections();
 
 builder.Services.AddScoped<SignInManager<User>>();
 
-builder.Services.AddTransient<IEmailSender, EmailSenderService>();
+//builder.Services.AddTransient<IEmailSender, EmailSenderService>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
 builder.Services.ConfigureApplicationCookie(o => {

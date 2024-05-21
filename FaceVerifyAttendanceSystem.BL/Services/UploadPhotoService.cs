@@ -43,9 +43,13 @@ namespace FaceVerifyAttendanceSystem.BL.Services
             return $"https://drive.google.com/thumbnail?id={uploadPhoto.Id}";
         }
 
-        public static async Task<string> UploadProfilePhoto(string credentialPath, string folderId, IFormFile photo)
+        public static async Task<string> UploadProfilePhoto(string credentialPath, string folderId, IFormFile photo, string firstName,
+            string middleName, string lastName, int? identificationNumber)
         {
-            var filePath = Path.GetTempFileName();
+            var fileExtension = Path.GetExtension(photo.FileName);
+            var newFileName = $"{firstName}_{middleName}_{lastName}_{identificationNumber}{fileExtension}";
+            var filePath = Path.Combine(Path.GetTempPath(), newFileName);
+
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await photo.CopyToAsync(stream);

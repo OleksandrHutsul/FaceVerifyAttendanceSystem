@@ -79,7 +79,8 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
 
             if (IndexDTO.Photo != null)
             {
-                var photoUrl = await UploadPhotoService.UploadProfilePhoto(credentialPath, folderId, IndexDTO.Photo);
+                var photoUrl = await UploadPhotoService.UploadProfilePhoto(credentialPath, folderId, IndexDTO.Photo, user.FirstName,
+                    user.MiddleName, user.LastName, user.IdentificationNumber);
                 IndexDTO.ProfilePicture = photoUrl;
             }
 

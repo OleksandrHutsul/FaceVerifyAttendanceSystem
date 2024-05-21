@@ -31,7 +31,7 @@ namespace FaceVerifyAttendanceSystem.BL.Models
 
         [Required]
         [Display(Name = "Identification Number")]
-        public int IdentificationNumber { get; set; }
+        public int? IdentificationNumber { get; set; }
 
         [Display(Name = "Country")]
         public string? Country { get; set; }

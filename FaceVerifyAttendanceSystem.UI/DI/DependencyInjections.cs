@@ -1,7 +1,9 @@
-﻿using FaceVerifyAttendanceSystem.DAL.Repositories;
+﻿using FaceVerifyAttendanceSystem.BL.Services;
+using FaceVerifyAttendanceSystem.DAL.Repositories;
 using FaceVerifyAttendanceSystem.DAL.Repositories.Interfaces;
 using FaceVerifyAttendanceSystem.DAL.UnitOfWorks;
 using FaceVerifyAttendanceSystem.DAL.UnitOfWorks.Interfaces;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace FaceVerifyAttendanceSystem.UI.DI
 {
@@ -11,6 +13,9 @@ namespace FaceVerifyAttendanceSystem.UI.DI
         {
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddTransient<AdminService>();
+            services.AddTransient<IEmailSender, EmailSenderService>();
         }
     }
 }
