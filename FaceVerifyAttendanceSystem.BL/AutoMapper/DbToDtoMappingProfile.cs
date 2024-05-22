@@ -38,8 +38,10 @@ namespace FaceVerifyAttendanceSystem.BL.AutoMapper
                 .ForMember(x => x.ProfilePicture, y => y.MapFrom(src => src.ProfilePicture));
 
             CreateMap<Application, ApplicationDTO>().ReverseMap()
-                .ForMember(x => x.NameDepartment, y => y.MapFrom(src => src.NameDepartment))
-                .ForMember(x => x.ApplicationStatusId, y => y.MapFrom(src => src.StatusId));
+                .ForMember(x => x.NameDepartment, y => y.MapFrom(src => src.NameDepartment));
+
+            CreateMap<ApplicationStatus, ApplicationStatusDTO>().ReverseMap()
+                .ForMember(x => x.StatusName, y => y.MapFrom(src => src.StatusName));
         }
     }
 }

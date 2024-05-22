@@ -18,10 +18,10 @@ namespace FaceVerifyAttendanceSystem.DAL.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Application)
-                .WithOne(a => a.User)
-                .HasForeignKey<User>(u => u.ApplicationId);
+            modelBuilder.Entity<Application>()
+               .HasOne(a => a.User)
+               .WithOne(u => u.Application)
+               .HasForeignKey<Application>(a => a.UserId);
         }
     }
 }

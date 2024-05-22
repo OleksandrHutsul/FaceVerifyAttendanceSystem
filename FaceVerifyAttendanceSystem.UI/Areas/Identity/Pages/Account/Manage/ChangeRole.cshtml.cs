@@ -63,6 +63,7 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
             {
                 var newApplication = _mapper.Map<Application>(ApplicationDTO);
                 newApplication.UserId = user.Id;
+                newApplication.ApplicationStatusId = 1;
                 await applicationRepository.AddAsync(newApplication);
             }
 

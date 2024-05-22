@@ -1,1 +1,60 @@
-﻿
+﻿@model IEnumerable<FaceVerifyAttendanceSystem.BL.Models.ApplicationDTO>
+
+@{
+    ViewData["Title"] = "Admin - Applications";
+}
+
+<h2>Applications</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name of the department</th>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Middle Name</th>
+            <th>Educational Institution</th>
+            <th>Application Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var application in Model)
+        {
+            <tr>
+                <td>@application.NameDepartment</td>
+                <td>@application.User.Email</td>
+                <td>@application.User.FirstName</td>
+                <td>@application.User.LastName</td>
+                <td>@application.User.MiddleName</td>
+                <td>@application.User.EducationalInstitution</td>
+                <td>@application.ApplicationStatus.StatusName</td>
+                <td>
+                    @if (application.ApplicationStatus.StatusName != "Approved" && application.ApplicationStatus.StatusName != "Rejected")
+                    {
+                        <form asp-action="ChangeApplicationStatus" method="post">
+                            <input type="hidden" name="applicationId" value="@application.Id" />
+                            <button type="submit" name="newStatusId" value="2">Approve</button>
+                            <button type="submit" name="newStatusId" value="3">Reject</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span>Status cannot be changed</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}

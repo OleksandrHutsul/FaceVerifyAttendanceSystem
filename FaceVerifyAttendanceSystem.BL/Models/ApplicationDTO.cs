@@ -10,6 +10,7 @@ namespace FaceVerifyAttendanceSystem.BL.Models
         [Display(Name = "Name of the department")]
         public string NameDepartment { get; set; }
 
-        public int StatusId { get; set; } = 1;
+        public ExternalLoginDTO User { get; set; }
+        public ApplicationStatusDTO ApplicationStatus { get; set; }
     }
 }

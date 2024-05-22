@@ -17,6 +17,5 @@ namespace FaceVerifyAttendanceSystem.DAL.Repositories.Interfaces
         Task DeleteRangeAsync(ICollection<TEntity> entities);
         Task<ICollection<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
         Task<IQueryable<TEntity>> Pagination(Expression<Func<TEntity, object>> orderBy);
-
     }
 }

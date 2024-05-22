@@ -108,5 +108,15 @@ namespace FaceVerifyAttendanceSystem.DAL.Repositories
         {
             return await Task.FromResult(_context.Set<TEntity>().OrderBy(orderBy));
         }
+
+        public IQueryable<TEntity> GetWithIncludes(params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+            return query;
+        }
     }
 }
