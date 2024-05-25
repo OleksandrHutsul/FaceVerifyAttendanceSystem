@@ -1,7 +1,11 @@
 ﻿@using FaceVerifyAttendanceSystem.DAL.Entities
 @inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var user = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(user);
+    var isStudentRole = roles.Any(role => role.ToLower() == "student");
 }
 <ul class="nav nav-pills flex-column">
     <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
@@ -12,5 +16,8 @@
     }
     <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
     <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangeRoleNavClass(ViewContext)" id="change-role" asp-page="./ChangeRole">Change Role</a></li>
+    @if (isStudentRole)
+    {
+        <li class="nav-item"><a class="nav-link @ManageNavPages.ChangeRoleNavClass(ViewContext)" id="change-role" asp-page="./ChangeRole">Change Role</a></li>
+    }
 </ul>

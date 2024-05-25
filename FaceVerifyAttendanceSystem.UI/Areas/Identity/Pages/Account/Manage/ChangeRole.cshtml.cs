@@ -51,11 +51,16 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
             }
 
             var applicationRepository = _unitOfWork.GetRepository<Application>();
-
             var existingApplication = (await applicationRepository.FindAsync(a => a.UserId == user.Id)).FirstOrDefault();
 
             if (existingApplication != null)
             {
+                if (existingApplication.ApplicationStatusId == 3)
+                {
+                    ModelState.AddModelError(string.Empty, "Your application has been rejected and cannot be resubmitted.");
+                    return Page();
+                }
+
                 _mapper.Map(ApplicationDTO, existingApplication);
                 await applicationRepository.UpdateAsync(existingApplication);
             }
