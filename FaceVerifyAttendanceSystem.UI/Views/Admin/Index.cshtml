@@ -6,16 +6,53 @@
 
 <h2>Applications</h2>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form method="get">
+    <div>
+        <label for="statusFilter">Status:</label>
+        <select id="statusFilter" name="statusFilter">
+            <option value="">All</option>
+            <option value="Розглядається">Розглядається</option>
+            <option value="Успішно">Успішно</option>
+            <option value="Відхилено">Відхилено</option>
+        </select>
+        <button type="submit">Filter</button>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
-            <th>Name of the department</th>
-            <th>Email</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Middle Name</th>
-            <th>Educational Institution</th>
-            <th>Application Status</th>
+            <th>
+                <a asp-action="Index" asp-route-sortField="NameDepartment" asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">Name of the department</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortField="User.Email" asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">Email</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortField="User.FirstName" asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">First Name</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortField="User.LastName" asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">Last Name</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortField="User.MiddleName" asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">Middle Name</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortField="User.EducationalInstitution" asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">Educational Institution</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortField="ApplicationStatus.StatusName" asp-route-sortOrder="@(ViewBag.SortOrder == "asc" ? "desc" : "asc")">Application Status</a>
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -35,8 +72,8 @@
                     {
                         <form asp-action="ChangeApplicationStatus" method="post">
                             <input type="hidden" name="applicationId" value="@application.Id" />
-                            <button type="submit" name="newStatusId" value="2">Approve</button>
-                            <button type="submit" name="newStatusId" value="3">Reject</button>
+                            <button type="submit" class="btn btn-success" name="newStatusId" value="2">Approve</button>
+                            <button type="submit" class="btn btn-danger" name="newStatusId" value="3">Reject</button>
                         </form>
                     }
                     else
@@ -45,16 +82,9 @@
                     }
                 </td>
             </tr>
+            <tr>
+                <td colspan="8"><hr /></td>
+            </tr>
         }
     </tbody>
 </table>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}

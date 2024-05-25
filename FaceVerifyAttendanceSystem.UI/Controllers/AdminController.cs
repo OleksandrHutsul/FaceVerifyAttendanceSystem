@@ -1,7 +1,7 @@
-﻿using FaceVerifyAttendanceSystem.BL.Services;
+﻿using FaceVerifyAttendanceSystem.BL.Models;
+using FaceVerifyAttendanceSystem.BL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace FaceVerifyAttendanceSystem.UI.Controllers
 {
@@ -15,9 +15,19 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
             _adminService = adminService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortField, string sortOrder, string statusFilter)
         {
-            var applications = await _adminService.GetAllApplicationsAsync();
+            ViewBag.SortField = sortField;
+            ViewBag.SortOrder = sortOrder;
+
+            var filterParams = new ApplicationFilterParams
+            {
+                SortField = sortField,
+                SortOrder = sortOrder,
+                StatusFilter = statusFilter
+            };
+
+            var applications = await _adminService.GetAllApplicationsAsync(filterParams);
             return View(applications);
         }
 

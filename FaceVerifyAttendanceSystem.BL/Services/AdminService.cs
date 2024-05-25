@@ -21,32 +21,55 @@ namespace FaceVerifyAttendanceSystem.BL.Services
             _userManager = userManager;
         }
 
-        public async Task<List<ApplicationDTO>> GetAllApplicationsAsync()
+        public async Task<List<ApplicationDTO>> GetAllApplicationsAsync(ApplicationFilterParams filterParams)
         {
             var applicationRepository = _unitOfWork.GetRepository<Application>();
 
-            var applications = await applicationRepository
+            var query = applicationRepository
                 .Get()
                 .Include(a => a.User)
                 .Include(a => a.ApplicationStatus)
-                .ToListAsync();
+                .AsQueryable();
 
-            var applicationDTOs = new List<ApplicationDTO>();
-
-            foreach (var application in applications)
+            if (!string.IsNullOrEmpty(filterParams.StatusFilter))
             {
-                var applicationDTO = new ApplicationDTO
-                {
-                    Id = application.Id,
-                    NameDepartment = application.NameDepartment,
-                    User = _mapper.Map<ExternalLoginDTO>(application.User),
-                    ApplicationStatus = _mapper.Map<ApplicationStatusDTO>(application.ApplicationStatus)
-                };
-
-                applicationDTOs.Add(applicationDTO);
+                query = query.Where(a => a.ApplicationStatus.StatusName == filterParams.StatusFilter);
             }
 
-            return applicationDTOs;
+            switch (filterParams.SortField)
+            {
+                case "NameDepartment":
+                    query = filterParams.SortOrder == "asc" ? query.OrderBy(a => a.NameDepartment) : query.OrderByDescending(a => a.NameDepartment);
+                    break;
+                case "User.Email":
+                    query = filterParams.SortOrder == "asc" ? query.OrderBy(a => a.User.Email) : query.OrderByDescending(a => a.User.Email);
+                    break;
+                case "User.FirstName":
+                    query = filterParams.SortOrder == "asc" ? query.OrderBy(a => a.User.FirstName) : query.OrderByDescending(a => a.User.FirstName);
+                    break;
+                case "User.LastName":
+                    query = filterParams.SortOrder == "asc" ? query.OrderBy(a => a.User.LastName) : query.OrderByDescending(a => a.User.LastName);
+                    break;
+                case "User.MiddleName":
+                    query = filterParams.SortOrder == "asc" ? query.OrderBy(a => a.User.MiddleName) : query.OrderByDescending(a => a.User.MiddleName);
+                    break;
+                case "User.EducationalInstitution":
+                    query = filterParams.SortOrder == "asc" ? query.OrderBy(a => a.User.EducationalInstitution) : query.OrderByDescending(a => a.User.EducationalInstitution);
+                    break;
+                case "ApplicationStatus.StatusName":
+                    query = filterParams.SortOrder == "asc" ? query.OrderBy(a => a.ApplicationStatus.StatusName) : query.OrderByDescending(a => a.ApplicationStatus.StatusName);
+                    break;
+            }
+
+            var applications = await query.ToListAsync();
+
+            return applications.Select(application => new ApplicationDTO
+            {
+                Id = application.Id,
+                NameDepartment = application.NameDepartment,
+                User = _mapper.Map<ExternalLoginDTO>(application.User),
+                ApplicationStatus = _mapper.Map<ApplicationStatusDTO>(application.ApplicationStatus)
+            }).ToList();
         }
 
         public async Task<bool> ChangeApplicationStatusAsync(int applicationId, int newStatusId)
