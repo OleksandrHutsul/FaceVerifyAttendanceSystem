@@ -2,7 +2,6 @@
 using FaceVerifyAttendanceSystem.DAL.Entities;
 using FaceVerifyAttendanceSystem.BL.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using FaceVerifyAttendanceSystem.DAL.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Identity;
 

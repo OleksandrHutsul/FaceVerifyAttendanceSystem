@@ -70,6 +70,10 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
                 newApplication.UserId = user.Id;
                 newApplication.ApplicationStatusId = 1;
                 await applicationRepository.AddAsync(newApplication);
+                await _unitOfWork.SaveChangesAsync();
+
+                user.ApplicationId = newApplication.Id;
+                await _userManager.UpdateAsync(user);
             }
 
             await _unitOfWork.SaveChangesAsync();
@@ -77,5 +81,6 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
+
     }
 }

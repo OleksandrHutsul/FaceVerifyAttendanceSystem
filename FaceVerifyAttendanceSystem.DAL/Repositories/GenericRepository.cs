@@ -104,9 +104,15 @@ namespace FaceVerifyAttendanceSystem.DAL.Repositories
             return query;
         }
 
-        public async Task<IQueryable<TEntity>> Pagination(Expression<Func<TEntity, object>> orderBy)
+        public async Task<IEnumerable<TEntity>> Pagination(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, object>> orderBy, int pageNumber, int pageSize)
         {
-            return await Task.FromResult(_context.Set<TEntity>().OrderBy(orderBy));
+            var query = _context.Set<TEntity>().Where(filter).OrderBy(orderBy).Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            return await query.ToListAsync();
+        }
+
+        public async Task<int> CountAsync(Expression<Func<TEntity, bool>> filter)
+        {
+            return await _context.Set<TEntity>().CountAsync(filter);
         }
 
         public IQueryable<TEntity> GetWithIncludes(params Expression<Func<TEntity, object>>[] includeProperties)

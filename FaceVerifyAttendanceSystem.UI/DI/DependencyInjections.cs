@@ -15,6 +15,7 @@ namespace FaceVerifyAttendanceSystem.UI.DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddTransient<AdminService>();
+            services.AddTransient<CourseService>();
             services.AddTransient<IEmailSender, EmailSenderService>();
         }
     }

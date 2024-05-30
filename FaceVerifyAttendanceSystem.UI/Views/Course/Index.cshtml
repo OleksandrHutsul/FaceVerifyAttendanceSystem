@@ -1,0 +1,112 @@
+﻿@model IEnumerable<FaceVerifyAttendanceSystem.BL.Models.LessonDTO>
+
+@{
+    ViewData["Title"] = "Teacher - Lessons";
+    int pageNumber = ViewBag.PageNumber;
+    int totalPages = ViewBag.TotalPages;
+}
+
+<h2>Create Course</h2>
+<hr />
+<div class="album py-5">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col">
+                <div class="card shadow-sm">
+                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <title>Create</title>
+                        <rect width="100%" height="100%" fill="#55595c"></rect>
+                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">Create</text>
+                    </svg>
+                    <div class="card-body">
+                        <p class="card-text">Here you can create new course for student.</p>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.href='@Url.Action("Create", "Course")'">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+<h2>Your Course</h2>
+<hr />
+<div class="album py-5">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            @foreach (var course in Model)
+            {
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                            <title>@course.NameCourse</title>
+                            <rect width="100%" height="100%" fill="#55595c"></rect>
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">@course.NameCourse</text>
+                        </svg>
+                        <div class="card-body">
+                            <p class="card-text">
+                                @if (@course.DescriptionCourse == null)
+                                {
+                                    @course.NameCourse
+                                }
+                                else
+                                {
+                                    @course.DescriptionCourse
+                                }
+                                <br />
+                                @course.OwnerCourse
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                </div>
+                                <small class="text-body-secondary">
+                                    @if (course.StartCourse == null && course.EndCourse == null)
+                                    {
+                                        @:NaN
+                                    }
+                                    else
+                                    {
+                                        @($"Start: {course.StartCourse?.ToString("d")}")
+                                        <br />
+                                        @($"Finish: {course.EndCourse?.ToString("d")}")
+                                    }
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div>
+    <ul class="pagination">
+        @if (pageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new { pageNumber = pageNumber - 1 })">&laquo;</a>
+            </li>
+        }
+
+        @for (var i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == pageNumber ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pageNumber = i })">@i</a>
+            </li>
+        }
+
+        @if (pageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new { pageNumber = pageNumber + 1 })">&raquo;</a>
+            </li>
+        }
+    </ul>
+</div>
