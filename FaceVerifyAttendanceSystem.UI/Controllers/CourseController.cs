@@ -2,7 +2,6 @@
 using FaceVerifyAttendanceSystem.BL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace FaceVerifyAttendanceSystem.UI.Controllers
 {
@@ -10,10 +9,12 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
     public class CourseController : Controller
     {
         private readonly CourseService _courseService;
+        private readonly ILogger<CourseController> _logger;
 
-        public CourseController(CourseService courseService)
+        public CourseController(CourseService courseService, ILogger<CourseController> logger)
         {
             _courseService = courseService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -40,20 +41,64 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userPrincipal = HttpContext.User;
-                var createdCourse = await _courseService.CreateCourseAsync(lessonDTO, userPrincipal);
-                return RedirectToAction(nameof(Index));
-            }
-
-            foreach (var state in ModelState)
-            {
-                if (state.Value.Errors.Count > 0)
+                try
                 {
-                    System.Diagnostics.Debug.WriteLine($"Property: {state.Key}, Error: {state.Value.Errors[0].ErrorMessage}");
+                    var userPrincipal = HttpContext.User;
+                    var createdCourse = await _courseService.CreateCourseAsync(lessonDTO, userPrincipal);
+                    TempData["SuccessMessage"] = "Course created successfully!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error creating course.");
+                    TempData["ErrorMessage"] = "An error occurred while creating the course.";
                 }
             }
-
             return View(lessonDTO);
+        }
+
+        [HttpGet]
+        public IActionResult Information()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(int id)
+        {
+            var lessonDTO = await _courseService.GetLessonByIdAsync(id);
+            if (lessonDTO == null)
+            {
+                TempData["ErrorMessage"] = "Course not found.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(lessonDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(int id, [FromForm] LessonDTO lessonDTO)
+        {
+            if (!ModelState.IsValid)
+                return View(lessonDTO);
+
+            try
+            {
+                var updatedEntity = await _courseService.UpdateAsync(id, lessonDTO);
+                if (updatedEntity == null)
+                {
+                    TempData["ErrorMessage"] = "Course not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+                TempData["SuccessMessage"] = "Course updated successfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating lesson with id {id}");
+                TempData["ErrorMessage"] = "An error occurred while updating the course.";
+                return View(lessonDTO);
+            }
         }
     }
 }
