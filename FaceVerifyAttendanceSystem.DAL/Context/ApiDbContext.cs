@@ -13,6 +13,7 @@ namespace FaceVerifyAttendanceSystem.DAL.Context
         public virtual DbSet<Lesson> Lessons { get; set; }
         public virtual DbSet<Application> Applications { get; set; }
         public virtual DbSet<ApplicationStatus> ApplicationStatus { get; set; }
+        public virtual DbSet<UserLesson> UserLessons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +23,19 @@ namespace FaceVerifyAttendanceSystem.DAL.Context
                .HasOne(a => a.User)
                .WithOne(u => u.Application)
                .HasForeignKey<Application>(a => a.UserId);
+
+            modelBuilder.Entity<UserLesson>()
+                .HasKey(ul => new { ul.UserId, ul.LessonId });
+
+            modelBuilder.Entity<UserLesson>()
+                .HasOne(ul => ul.User)
+                .WithMany(u => u.UserLessons)
+                .HasForeignKey(ul => ul.UserId);
+
+            modelBuilder.Entity<UserLesson>()
+                .HasOne(ul => ul.Lesson)
+                .WithMany(l => l.UserLessons)
+                .HasForeignKey(ul => ul.LessonId);
         }
     }
 }

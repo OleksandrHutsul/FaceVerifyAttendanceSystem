@@ -10,6 +10,6 @@
         public string? OwnerCourse { get; set; }
         public int UserId { get; set; }
         public required string WordsCode { get; set; }
-        public ICollection<User>? User { get; set; }
+        public ICollection<UserLesson>? UserLessons { get; set; }
     }
 }

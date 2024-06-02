@@ -4,6 +4,7 @@ using FaceVerifyAttendanceSystem.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
 
 namespace FaceVerifyAttendanceSystem.UI.Controllers
 {
@@ -11,16 +12,19 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
     public class CourseController : Controller
     {
         private readonly CourseService _courseService;
+        private readonly InformationService _informationService;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<CourseController> _logger;
 
-        public CourseController(CourseService courseService, ILogger<CourseController> logger, UserManager<User> userManager)
+        public CourseController(CourseService courseService, InformationService informationService, ILogger<CourseController> logger, UserManager<User> userManager)
         {
             _courseService = courseService;
             _logger = logger;
             _userManager = userManager;
+            _informationService = informationService;
         }
 
+        #region
         [HttpGet]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 6)
@@ -62,13 +66,6 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
                 }
             }
             return View(lessonDTO);
-        }
-
-        [HttpGet]
-        [Authorize(Policy = "TeacherOrStudentPolicy")]
-        public IActionResult Information()
-        {
-            return View();
         }
 
         [HttpGet]
@@ -124,6 +121,76 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
                 TempData["ErrorMessage"] = "An error occurred while updating the course.";
                 return View(lessonDTO);
             }
+        }
+        #endregion
+
+        [HttpGet]
+        [Authorize(Policy = "TeacherOrStudentPolicy")]
+        public async Task<IActionResult> Information(int courseId)
+        {
+            if (courseId == 0)
+            {
+                TempData["ErrorMessage"] = "Invalid course ID.";
+                return RedirectToAction("Error", "Home");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Error", "Home");
+            }
+
+            var isEnrolled = await _informationService.IsUserEnrolledAsync(courseId, user.Id);
+            if (isEnrolled)
+            {
+                ViewBag.Message = "You are already enrolled in this course.";
+                return View("Enrolled");
+            }
+
+            ViewBag.CourseId = courseId;
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "TeacherOrStudentPolicy")]
+        public async Task<IActionResult> Information(int courseId, WordsCodeDTO wordsCodeDTO)
+        {
+            if (courseId == 0)
+            {
+                TempData["ErrorMessage"] = "Invalid course ID.";
+                return RedirectToAction("Error", "Home");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Error", "Home");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.CourseId = courseId;
+                return View(wordsCodeDTO);
+            }
+
+            var isEnrolled = await _informationService.IsUserEnrolledAsync(courseId, user.Id);
+            if (isEnrolled)
+            {
+                ViewBag.Message = "You are already enrolled in this course.";
+                return View("Enrolled");
+            }
+
+            var success = await _informationService.EnrollUserInCourseAsync(courseId, user.Id, wordsCodeDTO.WordsCode);
+            if (success)
+            {
+                return RedirectToAction(nameof(Information), new { courseId });
+            }
+
+            TempData["ErrorMessage"] = "Incorrect word code";
+            ViewBag.CourseId = courseId;
+            return View(wordsCodeDTO);
         }
     }
 }

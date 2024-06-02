@@ -16,6 +16,7 @@ namespace FaceVerifyAttendanceSystem.UI.DI
 
             services.AddTransient<AdminService>();
             services.AddTransient<CourseService>();
+            services.AddTransient<InformationService>();
             services.AddTransient<IEmailSender, EmailSenderService>();
         }
     }

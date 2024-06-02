@@ -20,6 +20,6 @@ namespace FaceVerifyAttendanceSystem.DAL.Entities
         public Application? Application { get; set; }
 
         public ICollection<Attendance>? Attendances { get; set; }
-        public ICollection<Lesson>? Lessons { get; set; }
+        public ICollection<UserLesson>? UserLessons { get; set; }
     }
 }

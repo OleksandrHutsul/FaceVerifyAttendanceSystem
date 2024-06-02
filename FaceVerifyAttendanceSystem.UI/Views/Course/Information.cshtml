@@ -1,1 +1,26 @@
-﻿
+﻿@model FaceVerifyAttendanceSystem.BL.Models.WordsCodeDTO
+
+<h2>Enter the word code to enroll in the course</h2>
+
+<form asp-action="Information" method="post">
+    <input type="hidden" name="courseId" value="@ViewBag.CourseId" />
+    <div class="form-group">
+        <label for="WordsCode">Words Code</label>
+        <input type="text" class="form-control" id="WordsCode" name="WordsCode" required />
+        <span asp-validation-for="WordsCode" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

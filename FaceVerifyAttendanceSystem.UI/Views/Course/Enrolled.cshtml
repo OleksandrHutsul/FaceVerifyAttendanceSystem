@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Enrolled";
+}
+
+<h2>You are already enrolled in this course</h2>
+
+<p>Thank you for enrolling in the course. Here are the details:</p>
+<ul>
+    <li>Course Name: @ViewBag.CourseName</li>
+    <li>Course Description: @ViewBag.CourseDescription</li>
+    <li>Start Date: @ViewBag.StartDate</li>
+    <li>End Date: @ViewBag.EndDate</li>
+</ul>
+
+<a href="@Url.Action("Index", "Home")">Back to Home</a>
