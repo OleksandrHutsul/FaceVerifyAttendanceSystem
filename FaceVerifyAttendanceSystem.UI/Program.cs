@@ -56,6 +56,12 @@ builder.Services.AddRazorPages();
 
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("AuthMessageSenderOptions"));
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("TeacherOrStudentPolicy", policy =>
+        policy.RequireRole("Teacher", "Student"));
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

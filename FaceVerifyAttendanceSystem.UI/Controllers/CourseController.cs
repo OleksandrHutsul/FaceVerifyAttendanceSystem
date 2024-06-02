@@ -1,23 +1,28 @@
 ﻿using FaceVerifyAttendanceSystem.BL.Models;
 using FaceVerifyAttendanceSystem.BL.Services;
+using FaceVerifyAttendanceSystem.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FaceVerifyAttendanceSystem.UI.Controllers
 {
-    [Authorize(Roles = "Teacher")]
+    [AllowAnonymous]
     public class CourseController : Controller
     {
         private readonly CourseService _courseService;
+        private readonly UserManager<User> _userManager;
         private readonly ILogger<CourseController> _logger;
 
-        public CourseController(CourseService courseService, ILogger<CourseController> logger)
+        public CourseController(CourseService courseService, ILogger<CourseController> logger, UserManager<User> userManager)
         {
             _courseService = courseService;
             _logger = logger;
+            _userManager = userManager;
         }
 
         [HttpGet]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 6)
         {
             var userPrincipal = HttpContext.User;
@@ -30,6 +35,7 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
             return View();
@@ -37,6 +43,7 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Create(LessonDTO lessonDTO)
         {
             if (ModelState.IsValid)
@@ -58,36 +65,54 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "TeacherOrStudentPolicy")]
         public IActionResult Information()
         {
             return View();
         }
 
         [HttpGet]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Update(int id)
         {
-            var lessonDTO = await _courseService.GetLessonByIdAsync(id);
-            if (lessonDTO == null)
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
             {
-                TempData["ErrorMessage"] = "Course not found.";
+                TempData["ErrorMessage"] = "User not found.";
                 return RedirectToAction(nameof(Index));
             }
+
+            var lessonDTO = await _courseService.GetLessonByIdAsync(id, user.Id);
+            if (lessonDTO == null)
+            {
+                TempData["ErrorMessage"] = "Course not found or you do not have permission to edit this course.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(lessonDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Update(int id, [FromForm] LessonDTO lessonDTO)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction(nameof(Index));
+            }
+
             if (!ModelState.IsValid)
                 return View(lessonDTO);
 
             try
             {
-                var updatedEntity = await _courseService.UpdateAsync(id, lessonDTO);
+                var updatedEntity = await _courseService.UpdateAsync(id, lessonDTO, user.Id);
                 if (updatedEntity == null)
                 {
-                    TempData["ErrorMessage"] = "Course not found.";
+                    TempData["ErrorMessage"] = "Course not found or you do not have permission to edit this course.";
                     return RedirectToAction(nameof(Index));
                 }
                 TempData["SuccessMessage"] = "Course updated successfully!";

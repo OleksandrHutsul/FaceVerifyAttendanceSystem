@@ -56,7 +56,11 @@
                         <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
                             <title>@course.NameCourse</title>
                             <rect width="100%" height="100%" fill="#55595c"></rect>
-                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">@course.NameCourse</text>
+                            <foreignObject x="0" y="0" width="100%" height="100%">
+                                <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; justify-content: center; align-items: center; height: 100%; padding: 5px; box-sizing: border-box;">
+                                    <span style="color: #eceeef; text-align: center; overflow-wrap: break-word; word-wrap: break-word;">@course.NameCourse</span>
+                                </div>
+                            </foreignObject>
                         </svg>
                         <div class="card-body">
                             <p class="card-text">
@@ -74,10 +78,14 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.href='@Url.Action("Information", "Course")'">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary"
-                                            onclick="location.href='@Url.Action("Update", "Course", new { id = course.Id })'">
-                                        Edit
-                                    </button>
+
+                                    @if (User.IsInRole("Teacher"))
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                onclick="location.href='@Url.Action("Update", "Course", new { id = course.Id })'">
+                                            Edit
+                                        </button>
+                                    }
                                 </div>
                                 <small class="text-body-secondary">
                                     @if (course.StartCourse == null && course.EndCourse == null)

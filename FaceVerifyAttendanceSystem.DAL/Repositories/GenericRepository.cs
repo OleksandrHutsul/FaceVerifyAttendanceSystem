@@ -124,5 +124,14 @@ namespace FaceVerifyAttendanceSystem.DAL.Repositories
             }
             return query;
         }
+
+        public async Task<IEnumerable<TEntity>> GetRandomAsync(int count)
+        {
+            return await _context.Set<TEntity>()
+                .OrderBy(r => Guid.NewGuid())
+                .Take(count)
+                .ToListAsync();
+        }
+
     }
 }

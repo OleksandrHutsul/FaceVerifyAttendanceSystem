@@ -1,9 +1,12 @@
-﻿@{
+﻿@model IEnumerable<FaceVerifyAttendanceSystem.BL.Models.LessonDTO>
+
+@{
     ViewData["Title"] = "Home Page";
+    int pageNumber = ViewBag.PageNumber;
+    int totalPages = ViewBag.TotalPages;
 }
 
 <main>
-
     <section class="py-5 text-center container">
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
@@ -16,174 +19,94 @@
             </div>
         </div>
     </section>
+</main>
 
-    <div class="album py-5">
-        <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+<hr />
+<h2>Recommended Course</h2>
+<hr />
+<div class="album py-5">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            @foreach (var course in Model)
+            {
                 <div class="col">
                     <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                            <title>@course.NameCourse</title>
+                            <rect width="100%" height="100%" fill="#55595c"></rect>
+                            <foreignObject x="0" y="0" width="100%" height="100%">
+                                <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; justify-content: center; align-items: center; height: 100%; padding: 5px; box-sizing: border-box;">
+                                    <span style="color: #eceeef; text-align: center; overflow-wrap: break-word; word-wrap: break-word;">@course.NameCourse</span>
+                                </div>
+                            </foreignObject>
+                        </svg>
                         <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                            <p class="card-text">
+                                @if (@course.DescriptionCourse == null)
+                                {
+                                    @course.NameCourse
+                                }
+                                else
+                                {
+                                    @course.DescriptionCourse
+                                }
+                                <br />
+                                @course.OwnerCourse
+                            </p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                </div>
-                                <small class="text-body-secondary">9 mins</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                        <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                </div>
-                                <small class="text-body-secondary">9 mins</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                        <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                </div>
-                                <small class="text-body-secondary">9 mins</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.href='@Url.Action("Information", "Course")'">View</button>
 
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                        <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    @if (User.IsInRole("Teacher"))
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                onclick="location.href='@Url.Action("Update", "Course", new { id = course.Id })'">
+                                            Edit
+                                        </button>
+                                    }
                                 </div>
-                                <small class="text-body-secondary">9 mins</small>
+                                <small class="text-body-secondary">
+                                    @if (course.StartCourse == null && course.EndCourse == null)
+                                    {
+                                        @:NaN
+                                    }
+                                    else
+                                    {
+                                        @($"Start: {course.StartCourse?.ToString("d")}")
+                                        <br />
+                                        @($"Finish: {course.EndCourse?.ToString("d")}")
+                                    }
+                                </small>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                        <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                </div>
-                                <small class="text-body-secondary">9 mins</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                        <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                </div>
-                                <small class="text-body-secondary">9 mins</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                        <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                </div>
-                                <small class="text-body-secondary">9 mins</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                        <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                </div>
-                                <small class="text-body-secondary">9 mins</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                        <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                </div>
-                                <small class="text-body-secondary">9 mins</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
+</div>
 
-    <div>
-        <ul class="pagination">
+<div>
+    <ul class="pagination">
+        @if (pageNumber > 1)
+        {
             <li class="page-item">
-                <a class="page-link" href="#">&laquo;</a>
+                <a class="page-link" href="@Url.Action("Index", new { pageNumber = pageNumber - 1 })">&laquo;</a>
             </li>
-            <li class="page-item active">
-                <a class="page-link" href="#">1</a>
+        }
+
+        @for (var i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == pageNumber ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pageNumber = i })">@i</a>
             </li>
+        }
+
+        @if (pageNumber < totalPages)
+        {
             <li class="page-item">
-                <a class="page-link" href="#">2</a>
+                <a class="page-link" href="@Url.Action("Index", new { pageNumber = pageNumber + 1 })">&raquo;</a>
             </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">4</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">5</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">&raquo;</a>
-            </li>
-        </ul>
-    </div>
-</main>
+        }
+    </ul>
+</div>

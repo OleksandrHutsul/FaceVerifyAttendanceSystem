@@ -18,5 +18,6 @@ namespace FaceVerifyAttendanceSystem.DAL.Repositories.Interfaces
         Task<ICollection<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
         Task<IEnumerable<TEntity>> Pagination(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, object>> orderBy, int pageNumber, int pageSize);
         Task<int> CountAsync(Expression<Func<TEntity, bool>> filter);
+        Task<IEnumerable<TEntity>> GetRandomAsync(int count);
     }
 }
