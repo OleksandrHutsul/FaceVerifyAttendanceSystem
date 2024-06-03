@@ -5,9 +5,6 @@ using FaceVerifyAttendanceSystem.UI.DI;
 using FaceVerifyAttendanceSystem.BL.AutoMapper;
 using FaceVerifyAttendanceSystem.DAL.Entities;
 using FaceVerifyAttendanceSystem.BL.Models;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using FaceVerifyAttendanceSystem.BL.Services;
-using Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,16 +12,6 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApiDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("SqlConnection")));
-
-//builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<ApiDbContext>();
-
-//builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
-//{
-//    options.SignIn.RequireConfirmedAccount = true;
-//})
-//    .AddEntityFrameworkStores<ApiDbContext>()
-//    .AddDefaultTokenProviders();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddRoles<IdentityRole<int>>() 
@@ -35,7 +22,6 @@ builder.Services.AddDependencyInjections();
 
 builder.Services.AddScoped<SignInManager<User>>();
 
-//builder.Services.AddTransient<IEmailSender, EmailSenderService>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
 builder.Services.ConfigureApplicationCookie(o => {

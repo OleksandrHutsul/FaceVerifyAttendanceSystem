@@ -50,6 +50,7 @@ namespace FaceVerifyAttendanceSystem.BL.AutoMapper
 
             CreateMap<Lesson, LessonDTO>().ReverseMap();
             CreateMap<Lesson, WordsCodeDTO>().ReverseMap();
+            CreateMap<Lesson, CourseDetailDTO>().ReverseMap();
         }
     }
 }

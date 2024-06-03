@@ -4,7 +4,6 @@ using FaceVerifyAttendanceSystem.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.SqlServer.Server;
 
 namespace FaceVerifyAttendanceSystem.UI.Controllers
 {
@@ -56,6 +55,7 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
                 {
                     var userPrincipal = HttpContext.User;
                     var createdCourse = await _courseService.CreateCourseAsync(lessonDTO, userPrincipal);
+                    await _informationService.EnrollUserInCourseAsync(createdCourse.Id, createdCourse.UserId, lessonDTO.WordsCode, true);
                     TempData["SuccessMessage"] = "Course created successfully!";
                     return RedirectToAction(nameof(Index));
                 }
@@ -144,8 +144,8 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
             var isEnrolled = await _informationService.IsUserEnrolledAsync(courseId, user.Id);
             if (isEnrolled)
             {
-                ViewBag.Message = "You are already enrolled in this course.";
-                return View("Enrolled");
+                TempData["Message"] = "You are already enrolled in this course.";
+                return RedirectToAction("Enrolled", new { courseId });
             }
 
             ViewBag.CourseId = courseId;
@@ -169,6 +169,12 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
+            //if (!user.Email.Contains("edu"))
+            //{
+            //    TempData["ErrorMessage"] = "Registration is allowed only with educational email addresses.";
+            //    return RedirectToAction("Error", "Home");
+            //}
+
             if (!ModelState.IsValid)
             {
                 ViewBag.CourseId = courseId;
@@ -178,19 +184,51 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
             var isEnrolled = await _informationService.IsUserEnrolledAsync(courseId, user.Id);
             if (isEnrolled)
             {
-                ViewBag.Message = "You are already enrolled in this course.";
-                return View("Enrolled");
+                TempData["Message"] = "You are already enrolled in this course.";
+                return RedirectToAction("Enrolled", new { courseId });
             }
 
             var success = await _informationService.EnrollUserInCourseAsync(courseId, user.Id, wordsCodeDTO.WordsCode);
             if (success)
             {
-                return RedirectToAction(nameof(Information), new { courseId });
+                TempData["SuccessMessage"] = "You have successfully enrolled in the course.";
+                return RedirectToAction("Enrolled", new { courseId });
             }
 
-            TempData["ErrorMessage"] = "Incorrect word code";
+            TempData["ErrorMessage"] = "Incorrect word code.";
             ViewBag.CourseId = courseId;
             return View(wordsCodeDTO);
+        }
+
+        [HttpGet]
+        [Authorize(Policy = "TeacherOrStudentPolicy")]
+        public async Task<IActionResult> Enrolled(int courseId)
+        {
+            if (courseId == 0)
+            {
+                TempData["ErrorMessage"] = "Invalid course ID.";
+                return RedirectToAction("Error", "Home");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Error", "Home");
+            }
+
+            var courseDetail = await _informationService.GetCourseDetailAsync(courseId);
+            if (courseDetail == null)
+            {
+                TempData["ErrorMessage"] = "Course not found.";
+                return RedirectToAction("Error", "Home");
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            ViewBag.UserRoles = string.Join(", ", roles);
+
+            ViewBag.CourseDetail = courseDetail;
+            return View();
         }
     }
 }

@@ -1,15 +1,82 @@
 ﻿@{
     ViewData["Title"] = "Enrolled";
+    var courseDetail = ViewBag.CourseDetail as FaceVerifyAttendanceSystem.BL.Models.CourseDetailDTO;
+    var userRoles = ViewBag.UserRoles as string;
 }
 
-<h2>You are already enrolled in this course</h2>
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["Message"]
+    </div>
+}
 
-<p>Thank you for enrolling in the course. Here are the details:</p>
-<ul>
-    <li>Course Name: @ViewBag.CourseName</li>
-    <li>Course Description: @ViewBag.CourseDescription</li>
-    <li>Start Date: @ViewBag.StartDate</li>
-    <li>End Date: @ViewBag.EndDate</li>
-</ul>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (courseDetail != null)
+{
+    <h2>@courseDetail.NameCourse</h2>
+
+    <p>@courseDetail.DescriptionCourse</p>
+    <ul>
+        <li>Start Date: @courseDetail.StartCourse.ToString("d")</li>
+        <li>End Date: @courseDetail.EndCourse.ToString("d")</li>
+        <li>Teacher: @courseDetail.OwnerCourse</li>
+    </ul>
+
+    <h3>Enrolled Users:</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < courseDetail.EnrolledUsers.Count; i++)
+            {
+                var user = courseDetail.EnrolledUsers[i];
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@user.LastName</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.MiddleName</td>
+                    <td>@user.Email</td>
+                    <td>@(string.Join(", ", user.Roles))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Course details not available.</p>
+}
 
 <a href="@Url.Action("Index", "Home")">Back to Home</a>
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        text-align: left;
+    }
+</style>

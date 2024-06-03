@@ -1,5 +1,12 @@
 ﻿@model FaceVerifyAttendanceSystem.BL.Models.WordsCodeDTO
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <h2>Enter the word code to enroll in the course</h2>
 
 <form asp-action="Information" method="post">
@@ -11,13 +18,6 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
-}
 
 @section Scripts {
     @{
