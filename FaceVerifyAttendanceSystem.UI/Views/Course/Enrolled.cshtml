@@ -62,7 +62,7 @@ else
     <p>Course details not available.</p>
 }
 
-<a href="@Url.Action("Index", "Home")">Back to Home</a>
+<a href="@Url.Action("Attendance", "Course", new { courseId = courseDetail.Id })">View Chart</a>
 
 <style>
     table {

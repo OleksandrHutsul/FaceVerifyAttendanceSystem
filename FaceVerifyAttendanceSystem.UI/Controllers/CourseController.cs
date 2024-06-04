@@ -230,5 +230,65 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
             ViewBag.CourseDetail = courseDetail;
             return View();
         }
+
+        [HttpGet]
+        [Authorize(Policy = "TeacherOrStudentPolicy")]
+        public async Task<IActionResult> Attendance(int courseId)
+        {
+            if (courseId == 0)
+            {
+                TempData["ErrorMessage"] = "Invalid course ID.";
+                return RedirectToAction("Error", "Home");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Error", "Home");
+            }
+
+            var attendances = await _informationService.GetAttendanceByCourseAsync(courseId);
+            _logger.LogInformation($"{attendances.Count} attendance records found for course ID {courseId}.");
+
+            var attendanceWithUserInfo = new List<object>();
+
+            foreach (var attendance in attendances)
+            {
+                var attendedUser = await _userManager.FindByIdAsync(attendance.UserId.ToString());
+                if (attendedUser != null)
+                {
+                    attendanceWithUserInfo.Add(new
+                    {
+                        Date = attendance.Date,
+                        Attended = attendance.Attended,
+                        UserId = attendance.UserId,
+                        LessonId = attendance.LessonId,
+                        LastName = attendedUser.LastName ?? string.Empty,
+                        FirstName = attendedUser.FirstName ?? string.Empty,
+                        MiddleName = attendedUser.MiddleName ?? string.Empty
+                    });
+                    _logger.LogInformation($"Added attendance record for user {attendedUser.LastName} {attendedUser.FirstName} {attendedUser.MiddleName} on date {attendance.Date}.");
+                }
+                else
+                {
+                    _logger.LogWarning($"User with ID {attendance.UserId} not found.");
+                }
+            }
+
+            if (attendanceWithUserInfo.Count == 0)
+            {
+                _logger.LogWarning("No attendance records with user info were found.");
+            }
+            else
+            {
+                _logger.LogInformation($"{attendanceWithUserInfo.Count} attendance records with user info were added.");
+            }
+
+            ViewBag.Attendances = attendanceWithUserInfo;
+
+            return View();
+        }
+
     }
 }

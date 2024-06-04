@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace FaceVerifyAttendanceSystem.DAL.Entities
+﻿namespace FaceVerifyAttendanceSystem.DAL.Entities
 {
     public class Attendance
     {
@@ -10,5 +8,8 @@ namespace FaceVerifyAttendanceSystem.DAL.Entities
 
         public required int UserId { get; set; }
         public virtual User User { get; set; }
+
+        public required int LessonId { get; set; }
+        public virtual Lesson Lesson { get; set; }
     }
 }

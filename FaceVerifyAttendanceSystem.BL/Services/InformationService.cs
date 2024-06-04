@@ -16,17 +16,20 @@ namespace FaceVerifyAttendanceSystem.BL.Services
         private readonly IMapper _mapper;
         private readonly IRepository<Lesson> _lessonRepository;
         private readonly IRepository<UserLesson> _userLessonRepository;
+        private readonly IRepository<Attendance> _attendanceRepository;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<InformationService> _logger;
 
         public InformationService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager,
-            IRepository<Lesson> lessonRepository, IRepository<UserLesson> userLessonRepository, ILogger<InformationService> logger)
+            IRepository<Lesson> lessonRepository, IRepository<UserLesson> userLessonRepository, 
+            IRepository<Attendance> attendanceRepository, ILogger<InformationService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userManager = userManager;
             _lessonRepository = lessonRepository;
             _userLessonRepository = userLessonRepository;
+            _attendanceRepository = attendanceRepository;
             _logger = logger;
         }
 
@@ -120,6 +123,7 @@ namespace FaceVerifyAttendanceSystem.BL.Services
 
             var courseDetail = new CourseDetailDTO
             {
+                Id = lesson.Id,
                 NameCourse = lesson.NameCourse,
                 DescriptionCourse = lesson.DescriptionCourse,
                 StartCourse = lesson.StartCourse ?? DateTime.MinValue,
@@ -129,6 +133,15 @@ namespace FaceVerifyAttendanceSystem.BL.Services
             };
 
             return courseDetail;
+        }
+
+        public async Task<List<AttendanceDTO>> GetAttendanceByCourseAsync(int courseId)
+        {
+            var attendances = await _attendanceRepository.Get()
+                .Where(a => a.LessonId == courseId)
+                .ToListAsync();
+
+            return _mapper.Map<List<AttendanceDTO>>(attendances);
         }
     }
 }

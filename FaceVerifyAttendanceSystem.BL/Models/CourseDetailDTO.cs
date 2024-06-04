@@ -4,6 +4,7 @@ namespace FaceVerifyAttendanceSystem.BL.Models
 {
     public class CourseDetailDTO
     {
+        public int Id { get; set; }
         public string NameCourse { get; set; }
         public string DescriptionCourse { get; set; }
         [DataType(DataType.Date)]

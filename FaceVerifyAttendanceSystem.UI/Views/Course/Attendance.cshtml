@@ -1,0 +1,173 @@
+﻿@using Newtonsoft.Json
+@{
+    ViewData["Title"] = "Attendance";
+    var attendances = ViewBag.Attendances as List<dynamic>;
+}
+
+<h2>Attendance for Course @ViewBag.CourseId</h2>
+
+<div>
+    <canvas id="attendanceChart" width="400" height="200"></canvas>
+</div>
+
+<div>
+    <label for="userSearch">Search User: </label>
+    <input type="text" id="userSearch" placeholder="Enter user's name" oninput="filterData()">
+
+    <label for="attendanceFilter">Filter Attendance: </label>
+    <select id="attendanceFilter" onchange="filterData()">
+        <option value="all">All</option>
+        <option value="present">Present</option>
+        <option value="absent">Absent</option>
+    </select>
+
+    <label for="dateFrom">From: </label>
+    <input type="date" id="dateFrom" onchange="filterData()">
+
+    <label for="dateTo">To: </label>
+    <input type="date" id="dateTo" onchange="filterData()">
+</div>
+
+<div id="attendanceTableContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('attendanceChart').getContext('2d');
+    var attendanceData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Attendances));
+
+    var users = [...new Set(attendanceData.map(a => `${a.LastName} ${a.FirstName} ${a.MiddleName}`))];
+    var dates = [...new Set(attendanceData.map(a => new Date(a.Date).toLocaleDateString('uk-UA')))];
+    var dataMatrix = users.map(user => {
+        return dates.map(date => {
+            var attendance = attendanceData.find(a =>
+                `${a.LastName} ${a.FirstName} ${a.MiddleName}` === user &&
+                new Date(a.Date).toLocaleDateString('uk-UA') === date
+            );
+            return attendance ? (attendance.Attended ? 1 : 0) : 0;
+        });
+    });
+
+    function updateChartAndTable(filteredUsers, filteredDates, filteredDataMatrix) {
+        var data = {
+            labels: dates,
+            datasets: filteredUsers.map((user, index) => ({
+                label: user,
+                data: filteredDataMatrix[index],
+                borderColor: `rgba(${75 + index * 20}, 192, 192, 1)`,
+                backgroundColor: `rgba(${75 + index * 20}, 192, 192, 0.2)`,
+                borderWidth: 1,
+                spanGaps: true
+            }))
+        };
+
+        var config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function (value) {
+                                return value === 1 ? 'Present' : 'Absent';
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.raw === 1 ? 'Present' : 'Absent';
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        if (window.attendanceChart instanceof Chart) {
+            window.attendanceChart.destroy();
+        }
+
+        window.attendanceChart = new Chart(ctx, config);
+
+        var tableHtml = '<table border="1" cellpadding="5" cellspacing="0"><thead><tr><th>User / Date</th>';
+        dates.forEach(date => {
+            tableHtml += `<th>${date}</th>`;
+        });
+        tableHtml += '</tr></thead><tbody>';
+
+        filteredUsers.forEach((user, userIndex) => {
+            tableHtml += `<tr><td>${user}</td>`;
+            dates.forEach((date, dateIndex) => {
+                if (filteredDates.includes(date)) {
+                    var attendance = filteredDataMatrix[userIndex][dateIndex];
+                    if (attendance === 1) {
+                        tableHtml += `<td>Present</td>`;
+                    } else if (attendance === 0) {
+                        tableHtml += `<td>Absent</td>`;
+                    } else {
+                        tableHtml += `<td></td>`;
+                    }
+                } else {
+                    tableHtml += `<td></td>`;
+                }
+            });
+            tableHtml += '</tr>';
+        });
+
+        tableHtml += '</tbody></table>';
+        document.getElementById('attendanceTableContainer').innerHTML = tableHtml;
+    }
+
+    function filterData() {
+        var userSearch = document.getElementById('userSearch').value.toLowerCase();
+        var attendanceFilter = document.getElementById('attendanceFilter').value;
+        var dateFrom = document.getElementById('dateFrom').value;
+        var dateTo = document.getElementById('dateTo').value;
+
+        var filteredUsers = users.filter(user => user.toLowerCase().includes(userSearch));
+        var filteredDates = dates.filter(date => {
+            var dateObj = new Date(date.split('.').reverse().join('-'));
+            var fromCondition = dateFrom ? new Date(dateFrom) <= dateObj : true;
+            var toCondition = dateTo ? new Date(dateTo) >= dateObj : true;
+            return fromCondition && toCondition;
+        });
+
+        var filteredDataMatrix = filteredUsers.map(user => {
+            return dates.map(date => {
+                var attendance = attendanceData.find(a =>
+                    `${a.LastName} ${a.FirstName} ${a.MiddleName}` === user &&
+                    new Date(a.Date).toLocaleDateString('uk-UA') === date
+                );
+                var attended = attendance ? (attendance.Attended ? 1 : 0) : null;
+                if (filteredDates.includes(date)) {
+                    if (attendanceFilter === 'present') {
+                        return attended === 1 ? 1 : null;
+                    } else if (attendanceFilter === 'absent') {
+                        return attended === 0 ? 0 : null;
+                    }
+                    return attended;
+                } else {
+                    return null;
+                }
+            });
+        });
+
+        updateChartAndTable(filteredUsers, filteredDates, filteredDataMatrix);
+    }
+
+    updateChartAndTable(users, dates, dataMatrix);
+</script>
