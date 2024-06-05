@@ -25,7 +25,7 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
 
         #region
         [HttpGet]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Policy = "TeacherOrStudentPolicy")]
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 6)
         {
             var userPrincipal = HttpContext.User;

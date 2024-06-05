@@ -14,17 +14,20 @@ namespace FaceVerifyAttendanceSystem.BL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IRepository<Lesson> _repository;
+        private readonly IRepository<Lesson> _lessonRepository;
+        private readonly IRepository<UserLesson> _userLessonRepository;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<CourseService> _logger;
 
         public CourseService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager, 
-            IRepository<Lesson> repository, ILogger<CourseService> logger)
+            IRepository<Lesson> lessonRepository, IRepository<UserLesson> userLessonRepository,
+            ILogger<CourseService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userManager = userManager;
-            _repository = repository;
+            _lessonRepository = lessonRepository;
+            _userLessonRepository = userLessonRepository;
             _logger = logger;
         }
 
@@ -50,7 +53,7 @@ namespace FaceVerifyAttendanceSystem.BL.Services
                 EndCourse = lessonDTO.EndCourse
             };
 
-            await _repository.AddAsync(entity);
+            await _lessonRepository.AddAsync(entity);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<LessonDTO>(entity);
         }
@@ -63,17 +66,31 @@ namespace FaceVerifyAttendanceSystem.BL.Services
                 throw new UnauthorizedAccessException("User not found");
             }
 
-            var lessons = await _repository.Pagination(l => l.UserId == user.Id, l => l.NameCourse, pageNumber, pageSize);
-            var totalCount = await _repository.CountAsync(l => l.UserId == user.Id);
+            var createdLessons = await _lessonRepository.Pagination(l => l.UserId == user.Id, l => l.NameCourse, pageNumber, pageSize);
+            var createdTotalCount = await _lessonRepository.CountAsync(l => l.UserId == user.Id);
 
-            return (_mapper.Map<IEnumerable<LessonDTO>>(lessons), totalCount);
+            var registeredLessons = await _userLessonRepository
+                .Get()
+                .Include(ul => ul.Lesson)
+                .Where(ul => ul.UserId == user.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(ul => ul.Lesson)
+                .ToListAsync();
+
+            var registeredTotalCount = await _userLessonRepository.CountAsync(ul => ul.UserId == user.Id);
+
+            var allLessons = createdLessons.Concat(registeredLessons).Distinct().ToList();
+            var totalCount = createdTotalCount + registeredTotalCount;
+
+            return (_mapper.Map<IEnumerable<LessonDTO>>(allLessons), totalCount);
         }
 
         public async Task<LessonDTO?> UpdateAsync(int id, LessonDTO updatedEntity, int userId)
         {
             try
             {
-                var lesson = await _repository.Get().FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+                var lesson = await _lessonRepository.Get().FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
                 if (lesson == null)
                 {
                     _logger.LogWarning($"Lesson with id {id} not found or user {userId} does not have permission.");
@@ -86,7 +103,7 @@ namespace FaceVerifyAttendanceSystem.BL.Services
                 lesson.StartCourse = updatedEntity.StartCourse;
                 lesson.EndCourse = updatedEntity.EndCourse;
 
-                _repository.UpdateAsync(lesson);
+                _lessonRepository.UpdateAsync(lesson);
                 await _unitOfWork.SaveChangesAsync();
 
                 return _mapper.Map<LessonDTO>(lesson);
@@ -100,13 +117,13 @@ namespace FaceVerifyAttendanceSystem.BL.Services
 
         public async Task<LessonDTO?> GetLessonByIdAsync(int id, int userId)
         {
-            var lesson = await _repository.Get().FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var lesson = await _lessonRepository.Get().FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             return _mapper.Map<LessonDTO>(lesson);
         }
 
         public async Task<IEnumerable<LessonDTO>> GetRandomCoursesAsync(int count)
         {
-            var lessons = await _repository.GetRandomAsync(count);
+            var lessons = await _lessonRepository.GetRandomAsync(count);
             return _mapper.Map<IEnumerable<LessonDTO>>(lessons);
         }
     }

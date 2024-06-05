@@ -1,12 +1,14 @@
 ﻿@model IEnumerable<FaceVerifyAttendanceSystem.BL.Models.LessonDTO>
 
 @{
-    ViewData["Title"] = "Teacher - Lessons";
+    ViewData["Title"] = "Course";
     int pageNumber = ViewBag.PageNumber;
     int totalPages = ViewBag.TotalPages;
 }
-
-<h2>Teacher - Lessons</h2>
+@if (User.IsInRole("Teacher"))
+{
+    <h2>Course</h2>
+}
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -17,23 +19,25 @@
 {
     <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
 }
-
-<hr />
-<div class="album py-5">
-    <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            <div class="col">
-                <div class="card shadow-sm">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Create</title>
-                        <rect width="100%" height="100%" fill="#55595c"></rect>
-                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">Create</text>
-                    </svg>
-                    <div class="card-body">
-                        <p class="card-text">Here you can create new course for student.</p>
-                        <div class="d-flex justify-content-center align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.href='@Url.Action("Create", "Course")'">Create</button>
+@if (User.IsInRole("Teacher"))
+{
+    <hr />
+    <div class="album py-5">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                            <title>Create</title>
+                            <rect width="100%" height="100%" fill="#55595c"></rect>
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">Create</text>
+                        </svg>
+                        <div class="card-body">
+                            <p class="card-text">Here you can create new course for student.</p>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.href='@Url.Action("Create", "Course")'">Create</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -41,7 +45,7 @@
             </div>
         </div>
     </div>
-</div>
+}
 
 <hr />
 <h2>Your Course</h2>

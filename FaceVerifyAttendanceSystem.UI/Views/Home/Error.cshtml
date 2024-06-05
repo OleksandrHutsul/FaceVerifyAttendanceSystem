@@ -3,10 +3,12 @@
 }
 
 <h1>Error</h1>
-<p>An error occurred while processing your request.</p>
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger">
         @TempData["ErrorMessage"]
     </div>
 }
+
+<p>An error occurred while processing your request.</p>
