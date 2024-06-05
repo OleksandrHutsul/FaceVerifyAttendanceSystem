@@ -26,13 +26,22 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
         #region
         [HttpGet]
         [Authorize(Policy = "TeacherOrStudentPolicy")]
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 6)
+        public async Task<IActionResult> Index(string searchTerm, string sortOrder, int pageNumber = 1, int pageSize = 6)
         {
             var userPrincipal = HttpContext.User;
-            var (courses, totalCount) = await _courseService.GetCoursesByUserPagedAsync(userPrincipal, pageNumber, pageSize);
+            var (courses, totalCount) = await _courseService.GetCoursesByUserPagedAsync(userPrincipal, searchTerm, sortOrder, pageNumber, pageSize);
 
-            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            if (pageNumber > totalPages && totalPages > 0)
+            {
+                pageNumber = totalPages;
+                (courses, totalCount) = await _courseService.GetCoursesByUserPagedAsync(userPrincipal, searchTerm, sortOrder, pageNumber, pageSize);
+            }
+
+            ViewBag.TotalPages = totalPages;
             ViewBag.PageNumber = pageNumber;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
 
             return View(courses);
         }

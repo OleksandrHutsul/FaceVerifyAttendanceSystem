@@ -50,6 +50,25 @@
 <hr />
 <h2>Your Course</h2>
 <hr />
+<form method="get" asp-action="Index" class="mb-3">
+    <div class="row">
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Search courses..." name="searchTerm" value="@ViewBag.SearchTerm">
+        </div>
+        <div class="col">
+            <select class="form-select" name="sortOrder">
+                <option value="">Sort by</option>
+                <option value="date_asc">Date (earliest first)</option>
+                <option value="date_desc">Date (latest first)</option>
+                <option value="name_asc">Name (A-Z)</option>
+                <option value="name_desc">Name (Z-A)</option>
+            </select>
+        </div>
+        <div class="col">
+            <button class="btn btn-outline-secondary" type="submit">Apply</button>
+        </div>
+    </div>
+</form>
 <div class="album py-5">
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -117,21 +136,21 @@
         @if (pageNumber > 1)
         {
             <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index", new { pageNumber = pageNumber - 1 })">&laquo;</a>
+                <a class="page-link" href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, sortOrder = ViewBag.SortOrder, pageNumber = pageNumber - 1 })">&laquo;</a>
             </li>
         }
 
         @for (var i = 1; i <= totalPages; i++)
         {
             <li class="page-item @(i == pageNumber ? "active" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { pageNumber = i })">@i</a>
+                <a class="page-link" href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, sortOrder = ViewBag.SortOrder, pageNumber = i })">@i</a>
             </li>
         }
 
         @if (pageNumber < totalPages)
         {
             <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index", new { pageNumber = pageNumber + 1 })">&raquo;</a>
+                <a class="page-link" href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, sortOrder = ViewBag.SortOrder, pageNumber = pageNumber + 1 })">&raquo;</a>
             </li>
         }
     </ul>

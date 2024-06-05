@@ -58,7 +58,7 @@ namespace FaceVerifyAttendanceSystem.BL.Services
             return _mapper.Map<LessonDTO>(entity);
         }
 
-        public async Task<(IEnumerable<LessonDTO> Lessons, int TotalCount)> GetCoursesByUserPagedAsync(ClaimsPrincipal userPrincipal, int pageNumber, int pageSize)
+        public async Task<(IEnumerable<LessonDTO> Lessons, int TotalCount)> GetCoursesByUserPagedAsync(ClaimsPrincipal userPrincipal, string searchTerm, string sortOrder, int pageNumber, int pageSize)
         {
             var user = await _userManager.GetUserAsync(userPrincipal);
             if (user == null)
@@ -66,24 +66,43 @@ namespace FaceVerifyAttendanceSystem.BL.Services
                 throw new UnauthorizedAccessException("User not found");
             }
 
-            var createdLessons = await _lessonRepository.Pagination(l => l.UserId == user.Id, l => l.NameCourse, pageNumber, pageSize);
-            var createdTotalCount = await _lessonRepository.CountAsync(l => l.UserId == user.Id);
+            var createdLessonsQuery = _lessonRepository.Get().Where(l => l.UserId == user.Id);
+            var registeredLessonsQuery = _userLessonRepository.Get().Include(ul => ul.Lesson).Where(ul => ul.UserId == user.Id).Select(ul => ul.Lesson);
 
-            var registeredLessons = await _userLessonRepository
-                .Get()
-                .Include(ul => ul.Lesson)
-                .Where(ul => ul.UserId == user.Id)
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                createdLessonsQuery = createdLessonsQuery.Where(l => l.NameCourse.Contains(searchTerm));
+                registeredLessonsQuery = registeredLessonsQuery.Where(l => l.NameCourse.Contains(searchTerm));
+            }
+
+            var allLessonsQuery = createdLessonsQuery.Concat(registeredLessonsQuery).Distinct();
+
+            switch (sortOrder)
+            {
+                case "date_asc":
+                    allLessonsQuery = allLessonsQuery.OrderBy(l => l.EndCourse);
+                    break;
+                case "date_desc":
+                    allLessonsQuery = allLessonsQuery.OrderByDescending(l => l.EndCourse);
+                    break;
+                case "name_asc":
+                    allLessonsQuery = allLessonsQuery.OrderBy(l => l.NameCourse);
+                    break;
+                case "name_desc":
+                    allLessonsQuery = allLessonsQuery.OrderByDescending(l => l.NameCourse);
+                    break;
+                default:
+                    break;
+            }
+
+            var totalCount = await allLessonsQuery.CountAsync();
+
+            var pagedLessons = await allLessonsQuery
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(ul => ul.Lesson)
                 .ToListAsync();
 
-            var registeredTotalCount = await _userLessonRepository.CountAsync(ul => ul.UserId == user.Id);
-
-            var allLessons = createdLessons.Concat(registeredLessons).Distinct().ToList();
-            var totalCount = createdTotalCount + registeredTotalCount;
-
-            return (_mapper.Map<IEnumerable<LessonDTO>>(allLessons), totalCount);
+            return (_mapper.Map<IEnumerable<LessonDTO>>(pagedLessons), totalCount);
         }
 
         public async Task<LessonDTO?> UpdateAsync(int id, LessonDTO updatedEntity, int userId)
