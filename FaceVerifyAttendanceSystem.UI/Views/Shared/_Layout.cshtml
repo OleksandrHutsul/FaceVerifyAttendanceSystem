@@ -42,6 +42,12 @@
                                 <a class="nav-link @Html.IsActive("Course", "Index")" asp-area="" asp-controller="Course" asp-action="Index">Course</a>
                             </li>
                         }
+                        @if (User.IsInRole("Teacher"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @Html.IsActive("Schedule", "Index")" asp-area="" asp-controller="Schedule" asp-action="Index">Schedule</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

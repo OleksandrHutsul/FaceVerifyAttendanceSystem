@@ -1,0 +1,65 @@
+﻿@model FaceVerifyAttendanceSystem.BL.Models.ScheduleDTO
+
+@{
+    ViewData["Title"] = "Create Schedule";
+}
+
+<h1>Create Schedule</h1>
+
+<h4>Schedule</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div class="form-group">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScheduleTimeId" class="control-label">Time</label>
+                <select asp-for="ScheduleTimeId" class="form-control">
+                    <option value="">Select a time</option>
+                    @foreach (var time in (IEnumerable<FaceVerifyAttendanceSystem.DAL.Entities.ScheduleTime>)ViewBag.ScheduleTimes)
+                    {
+                        <option value="@time.Id">@time.StartTime - @time.EndTime</option>
+                    }
+                </select>
+                <span asp-validation-for="ScheduleTimeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScheduleDayOfWeekId" class="control-label">Day Of Week</label>
+                <select asp-for="ScheduleDayOfWeekId" class="form-control">
+                    <option value="">Select a day</option>
+                    @foreach (var day in (IEnumerable<FaceVerifyAttendanceSystem.DAL.Entities.ScheduleDayOfWeek>)ViewBag.DaysOfWeek)
+                    {
+                        <option value="@day.Id">@day.DayOfWeek</option>
+                    }
+                </select>
+                <span asp-validation-for="ScheduleDayOfWeekId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LessonId" class="control-label">Lesson</label>
+                <select asp-for="LessonId" class="form-control">
+                    <option value="">Select a lesson</option>
+                    @foreach (var lesson in (IEnumerable<FaceVerifyAttendanceSystem.DAL.Entities.Lesson>)ViewBag.Lessons)
+                    {
+                        <option value="@lesson.Id">@lesson.NameCourse</option>
+                    }
+                </select>
+                <span asp-validation-for="LessonId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

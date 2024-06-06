@@ -14,6 +14,9 @@ namespace FaceVerifyAttendanceSystem.DAL.Context
         public virtual DbSet<Application> Applications { get; set; }
         public virtual DbSet<ApplicationStatus> ApplicationStatus { get; set; }
         public virtual DbSet<UserLesson> UserLessons { get; set; }
+        public virtual DbSet<Schedule> Schedules { get; set; }
+        public virtual DbSet<ScheduleTime> ScheduleTimes { get; set; }
+        public virtual DbSet<ScheduleDayOfWeek> ScheduleDayOfWeeks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

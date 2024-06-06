@@ -133,5 +133,15 @@ namespace FaceVerifyAttendanceSystem.DAL.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+            return await query.ToListAsync();
+        }
+
     }
 }

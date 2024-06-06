@@ -1,0 +1,44 @@
+﻿@model IEnumerable<FaceVerifyAttendanceSystem.DAL.Entities.Schedule>
+
+@{
+    ViewData["Title"] = "Schedules";
+}
+
+<h1>Schedules</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Day Of Week</th>
+            <th>Time</th>
+            <th>Lesson</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Location</td>
+                <td>@item.ScheduleDayOfWeek.DayOfWeek</td>
+                <td>@item.ScheduleTime.StartTime - @item.ScheduleTime.EndTime</td>
+                <td>@item.Lesson.NameCourse</td>
+                <td>
+                    <form asp-action="Edit" method="get">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-secondary">Edit</button>
+                    </form>
+                    <form asp-action="Delete" method="get">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

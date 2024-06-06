@@ -79,7 +79,7 @@
     <div class="col-md-6">
         @if (!string.IsNullOrEmpty(Model.IndexDTO.ProfilePicture))
         {
-            <img class="avatar" id="profile-picture" alt="ProfilePicture" src="@Model.IndexDTO.ProfilePicture"/>
+            <img class="avatar" id="profile-picture" src="@Model.IndexDTO.ProfilePicture"/>
             <form method="post" asp-page-handler="DeletePhoto" class="mt-2">
                 <button style="margin-left: 125px" type="submit" class="btn btn-danger">Delete Photo</button>
             </form>

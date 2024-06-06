@@ -11,5 +11,6 @@
         public int UserId { get; set; }
         public required string WordsCode { get; set; }
         public ICollection<UserLesson>? UserLessons { get; set; }
+        public ICollection<Schedule>? Schedules { get; set; }
     }
 }
