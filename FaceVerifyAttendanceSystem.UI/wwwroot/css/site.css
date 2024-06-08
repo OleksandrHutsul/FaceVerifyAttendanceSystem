@@ -22,6 +22,7 @@ body {
 }
 
 .avatar {
+    display: block;
     vertical-align: middle;
     width: 200px;
     height: 200px;

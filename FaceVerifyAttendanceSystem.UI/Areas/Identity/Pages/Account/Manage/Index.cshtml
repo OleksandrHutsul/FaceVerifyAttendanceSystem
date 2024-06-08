@@ -47,11 +47,18 @@
                 <label asp-for="IndexDTO.Birthday" class="form-label"></label>
                 <span asp-validation-for="IndexDTO.Birthday" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="IndexDTO.IdentificationNumber" class="form-control" placeholder="Please enter your identification number." />
-                <label asp-for="IndexDTO.IdentificationNumber" class="form-label"></label>
-                <span asp-validation-for="IndexDTO.IdentificationNumber" class="text-danger"></span>
-            </div>
+            @if (User.IsInRole("Student"))
+            {
+                <div class="form-floating mb-3">
+                    <input asp-for="IndexDTO.IdentificationNumber" class="form-control" placeholder="Please enter your identification number." />
+                    <label asp-for="IndexDTO.IdentificationNumber" class="form-label"></label>
+                    <span asp-validation-for="IndexDTO.IdentificationNumber" class="text-danger"></span>
+                </div>
+            }
+            else if (User.IsInRole("Teacher"))
+            {
+                <input type="hidden" asp-for="IndexDTO.IdentificationNumber" value="100000" />
+            }
             <div class="form-floating mb-3">
                 <input asp-for="IndexDTO.Country" class="form-control" placeholder="Please enter your country." />
                 <label asp-for="IndexDTO.Country" class="form-label"></label>
@@ -62,16 +69,26 @@
                 <label asp-for="IndexDTO.City" class="form-label"></label>
                 <span asp-validation-for="IndexDTO.City" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="IndexDTO.CourseEducation" class="form-control" placeholder="Please enter your group number." />
-                <label asp-for="IndexDTO.CourseEducation" class="form-label"></label>
-                <span asp-validation-for="IndexDTO.CourseEducation" class="text-danger"></span>
-            </div>
+            @if (User.IsInRole("Student"))
+            {
+                <div class="form-floating mb-3">
+                    <input asp-for="IndexDTO.CourseEducation" class="form-control" placeholder="Please enter your group number." />
+                    <label asp-for="IndexDTO.CourseEducation" class="form-label"></label>
+                    <span asp-validation-for="IndexDTO.CourseEducation" class="text-danger"></span>
+                </div>
+            }
+            else if (User.IsInRole("Teacher"))
+            {
+                <input type="hidden" asp-for="IndexDTO.CourseEducation" value="000" />
+            }
 
-            <div class="form-floating mb-3">
-                <input type="file" id="photo-upload" name="IndexDTO.Photo" class="form-control" accept="image/*" />
-                <label for="photo-upload" class="form-label">Upload Photo</label>
-            </div>
+            @if (User.IsInRole("Student"))
+            {
+                <div class="form-floating mb-3">
+                    <input type="file" id="photo-upload" name="IndexDTO.Photo" class="form-control" accept="image/*" />
+                    <label for="photo-upload" class="form-label">Upload Photo</label>
+                </div>
+            }
 
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
@@ -79,7 +96,7 @@
     <div class="col-md-6">
         @if (!string.IsNullOrEmpty(Model.IndexDTO.ProfilePicture))
         {
-            <img class="avatar" id="profile-picture" src="@Model.IndexDTO.ProfilePicture"/>
+            <img class="avatar" id="profile-picture" alt="ProfilePicture" src="@Model.IndexDTO.ProfilePicture"/>
             <form method="post" asp-page-handler="DeletePhoto" class="mt-2">
                 <button style="margin-left: 125px" type="submit" class="btn btn-danger">Delete Photo</button>
             </form>

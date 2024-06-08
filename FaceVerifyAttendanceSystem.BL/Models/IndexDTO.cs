@@ -30,6 +30,7 @@ namespace FaceVerifyAttendanceSystem.BL.Models
         public DateTime? Birthday { get; set; }
 
         [Required]
+        [Range(100000, 999999, ErrorMessage = "Identification Number must be a 6-digit number.")]
         [Display(Name = "Identification Number")]
         public int? IdentificationNumber { get; set; }
 
@@ -40,6 +41,7 @@ namespace FaceVerifyAttendanceSystem.BL.Models
         public string? City { get; set; }
 
         [Required]
+        [RegularExpression(@"\d{3}", ErrorMessage = "Group number must be a 3-digit number.")]
         [Display(Name = "Group number")]
         public string CourseEducation { get; set; }
 

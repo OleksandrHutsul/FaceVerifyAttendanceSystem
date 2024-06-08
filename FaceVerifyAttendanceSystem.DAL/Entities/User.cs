@@ -14,7 +14,6 @@ namespace FaceVerifyAttendanceSystem.DAL.Entities
         public string? City { get; set; }
         public string? CourseEducation { get; set; }
         public int? IdentificationNumber { get; set; }
-        public string? UploadPhoto { get; set; }
 
         public int? ApplicationId { get; set; }
         public Application? Application { get; set; }

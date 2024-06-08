@@ -84,6 +84,19 @@ namespace FaceVerifyAttendanceSystem.UI.Areas.Identity.Pages.Account.Manage
                 IndexDTO.ProfilePicture = photoUrl;
             }
 
+            if (User.IsInRole("Teacher"))
+            {
+                IndexDTO.IdentificationNumber = 100000;
+                IndexDTO.CourseEducation = "000";
+            }
+
+            var userWithSameIdNumber = _userManager.Users.FirstOrDefault(u => u.IdentificationNumber == IndexDTO.IdentificationNumber && u.Id != user.Id);
+            if (userWithSameIdNumber != null)
+            {
+                ModelState.AddModelError("IndexDTO.IdentificationNumber", "Identification number must be unique.");
+                return Page();
+            }
+
             _mapper.Map(IndexDTO, user);
             var result = await _userManager.UpdateAsync(user);
 
