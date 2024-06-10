@@ -145,5 +145,44 @@ namespace FaceVerifyAttendanceSystem.BL.Services
             var lessons = await _lessonRepository.GetRandomAsync(count);
             return _mapper.Map<IEnumerable<LessonDTO>>(lessons);
         }
+
+        public async Task<bool> RemoveUserFromCourseAsync(int courseId, int userId, int currentUserId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                _logger.LogWarning($"User with id {userId} not found.");
+                return false;
+            }
+
+            var lesson = await _lessonRepository.Get()
+                .FirstOrDefaultAsync(l => l.Id == courseId);
+
+            if (lesson == null)
+            {
+                _logger.LogWarning($"Course with id {courseId} not found.");
+                return false;
+            }
+
+            if (lesson.UserId != currentUserId)
+            {
+                _logger.LogWarning($"User with id {currentUserId} is not the owner of course with id {courseId}.");
+                return false;
+            }
+
+            var userLesson = await _userLessonRepository.Get()
+                .FirstOrDefaultAsync(ul => ul.LessonId == courseId && ul.UserId == userId);
+
+            if (userLesson == null)
+            {
+                _logger.LogWarning($"User with id {userId} not enrolled in course with id {courseId}.");
+                return false;
+            }
+
+            _userLessonRepository.DeleteAsync(userLesson);
+            await _unitOfWork.SaveChangesAsync();
+            _logger.LogInformation($"User with id {userId} removed from course with id {courseId}.");
+            return true;
+        }
     }
 }

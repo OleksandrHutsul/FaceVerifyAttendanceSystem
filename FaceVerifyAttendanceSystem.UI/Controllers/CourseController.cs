@@ -4,6 +4,7 @@ using FaceVerifyAttendanceSystem.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FaceVerifyAttendanceSystem.UI.Controllers
 {
@@ -297,6 +298,33 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
             ViewBag.Attendances = attendanceWithUserInfo;
 
             return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveUser(int courseId, int userId)
+        {
+            try
+            {
+                var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var success = await _courseService.RemoveUserFromCourseAsync(courseId, userId, currentUserId);
+                if (success)
+                {
+                    TempData["SuccessMessage"] = "User removed successfully!";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "You are not the owner of this course or user not found in this course.";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error removing user with id {userId} from course with id {courseId}");
+                TempData["ErrorMessage"] = "An error occurred while removing the user.";
+            }
+
+            return RedirectToAction("Enrolled", new { courseId });
         }
 
     }

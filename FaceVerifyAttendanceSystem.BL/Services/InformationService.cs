@@ -113,6 +113,7 @@ namespace FaceVerifyAttendanceSystem.BL.Services
                 var roles = await _userManager.GetRolesAsync(ul.User);
                 enrolledUsers.Add(new UserDTO
                 {
+                    Id = ul.UserId,
                     LastName = ul.User.LastName,
                     FirstName = ul.User.FirstName,
                     MiddleName = ul.User.MiddleName,

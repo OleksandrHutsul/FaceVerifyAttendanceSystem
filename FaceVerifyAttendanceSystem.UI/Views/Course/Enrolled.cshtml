@@ -39,6 +39,10 @@
                 <th>Middle Name</th>
                 <th>Email</th>
                 <th>Roles</th>
+                @if (userRoles.Contains("Teacher"))
+                {
+                    <th>Actions</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -52,8 +56,20 @@
                     <td>@user.MiddleName</td>
                     <td>@user.Email</td>
                     <td>@(string.Join(", ", user.Roles))</td>
+                    @if (userRoles.Contains("Teacher"))
+                    {
+                        <td>
+                            <form asp-controller="Course" asp-action="RemoveUser" method="post" class="d-inline">
+                                <input type="hidden" name="courseId" value="@courseDetail.Id" />
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                            <p>User ID: @user.Id</p>
+                        </td>
+                    }
                 </tr>
             }
+
         </tbody>
     </table>
 }
