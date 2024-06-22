@@ -179,11 +179,11 @@ namespace FaceVerifyAttendanceSystem.UI.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            //if (!user.Email.Contains("edu"))
-            //{
-            //    TempData["ErrorMessage"] = "Registration is allowed only with educational email addresses.";
-            //    return RedirectToAction("Error", "Home");
-            //}
+            if (!user.Email.Contains("edu"))
+            {
+                TempData["ErrorMessage"] = "Registration is allowed only with educational email addresses.";
+                return RedirectToAction("Error", "Home");
+            }
 
             if (!ModelState.IsValid)
             {

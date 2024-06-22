@@ -18,6 +18,13 @@
     </div>
 }
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 @if (courseDetail != null)
 {
     <h2>@courseDetail.NameCourse</h2>
